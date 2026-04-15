@@ -367,6 +367,7 @@
   .is-best .res-rank { color: var(--accent); }
   .res-name { font-weight: 600; font-size: 14px; }
   .res-type { font-size: 11px; color: var(--mid); font-weight: 400; }
+  .res-note-mobile { display: none; }
   .res-note { font-size: 11px; color: var(--mid); font-style: italic; }
   .res-cost {
     font-family: 'Montserrat', sans-serif;
@@ -713,7 +714,7 @@
     .card-title { font-size: 16px; margin-bottom: 12px; }
     .card-subtitle { font-size: 12px; margin-bottom: 16px; }
 
-    /* ── FEE CALCULATOR ── */
+    /* ── FEE CALCULATOR INPUTS ── */
     .input-grid { grid-template-columns: 1fr; gap: 14px; margin-bottom: 18px; }
     .toggle-group { flex-direction: row; gap: 8px; }
     .toggle-option { padding: 10px 12px; font-size: 13px; }
@@ -721,18 +722,28 @@
     #results { margin-top: 20px; }
     .results-header { font-size: 16px; }
     .results-sub { font-size: 11px; }
-    /* Prevent border-radius clipping the first row */
+
+    /* ── FEE CALCULATOR RESULTS - restructure for mobile ── */
     .results-table { border-radius: 8px; overflow: visible; }
-    .results-table thead th { font-size: 9px; padding: 8px 10px; }
-    .results-table td { padding: 12px 10px; }
-    .res-rank { width: 24px; font-size: 12px; }
+    .results-table thead th { font-size: 9px; padding: 8px 8px; }
+    .results-table td { padding: 10px 8px; font-size: 13px; }
+    /* Hide Note column header and cell on mobile */
+    .results-table thead th:nth-child(3) { display: none; }
+    .results-table td:nth-child(3) { display: none; }
+    /* Make platform column show note below name */
+    .res-note-mobile { display: block; font-size: 10px; color: var(--mid); font-style: italic; margin-top: 3px; }
+    .res-rank { width: 20px; font-size: 11px; }
     .res-name { font-size: 13px; }
     .res-type { font-size: 10px; }
-    .res-note { font-size: 10px; }
     .res-cost { font-size: 14px; }
-    .res-best-badge { font-size: 8px; padding: 2px 6px; }
+    .res-best-badge { font-size: 8px; padding: 2px 5px; }
     .assumptions { font-size: 11px; padding: 12px 14px; }
     .disclaimer { font-size: 11px; padding: 12px 14px; margin-top: 12px; }
+
+    /* ── FUND AVAILABILITY - fix VAFTGAG hidden behind sticky header ── */
+    #tab-etfs .card { padding-top: 14px; }
+    /* Disable sticky thead on mobile - tab nav is sticky enough */
+    thead th { position: static !important; top: auto !important; }
 
     /* ── FULL COMPARISON — keep important columns readable ── */
     .table-wrap { border-radius: 8px; }
@@ -1375,7 +1386,7 @@ function calculate() {
     const rank = r.offered ? getRank(r.totalCost) : null;
     const isBest = r.offered && r.totalCost === minCost;
     const isWorst = r.offered && r.totalCost === maxCost && maxCost !== minCost;
-    const costClass = isBest ? 'best' : (isWorst ? 'worst' : '');
+    const costClass = isBest ? 'best' : '';
     const note = typeof r.platform.feeNote === 'object' ? r.platform.feeNote[investType] : r.platform.feeNote;
     const tied = isBest && tiedCount(minCost) > 1;
     const bestBadge = isBest ? `<span class="res-best-badge">★ ${tied ? 'Joint best' : 'Best for you'}</span>` : '';
@@ -1387,7 +1398,7 @@ function calculate() {
 
     tr.innerHTML = `
       <td class="res-rank">${rankDisplay}</td>
-      <td><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="res-name">${r.platform.name}</span>${bestBadge}</div><span class="res-type">${r.platform.type}</span></td>
+      <td><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="res-name">${r.platform.name}</span>${bestBadge}</div><span class="res-type">${r.platform.type}</span><span class="res-note-mobile">${r.offered ? (note || '') : 'Does not offer ' + (investType === 'funds' ? 'mutual funds' : 'ETFs/stocks')}</span></td>
       <td class="res-note">${r.offered ? (note || '—') : 'Does not offer ' + (investType === 'funds' ? 'mutual funds' : 'ETFs/stocks')}</td>
       <td class="res-cost ${costClass}">${r.offered ? '£' + r.totalCost.toFixed(0) : 'N/A'}</td>
     `;
