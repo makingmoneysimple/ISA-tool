@@ -699,11 +699,80 @@
   }
 
   @media (max-width: 640px) {
-    .card { padding: 20px; }
-    .result-card { flex-wrap: wrap; }
-    .result-costs { gap: 16px; }
-    .tab-btn { padding: 14px 16px; font-size: 12px; }
+    /* ── HEADER ── */
+    header { padding: 28px 16px 24px; }
+    header h1 { font-size: 32px; }
+
+    /* ── TAB NAV ── */
+    .tab-nav { justify-content: stretch; }
+    .tab-btn { padding: 12px 6px; font-size: 10px; letter-spacing: 0.03em; flex: 1; text-align: center; }
+
+    /* ── CONTAINER & CARDS ── */
+    .container { padding: 16px 12px 12px; }
+    .card { padding: 16px 14px; border-radius: 10px; margin-bottom: 16px; }
+    .card-title { font-size: 16px; margin-bottom: 12px; }
+    .card-subtitle { font-size: 12px; margin-bottom: 16px; }
+
+    /* ── FEE CALCULATOR ── */
+    .input-grid { grid-template-columns: 1fr; gap: 14px; margin-bottom: 18px; }
+    .toggle-group { flex-direction: row; gap: 8px; }
+    .toggle-option { padding: 10px 12px; font-size: 13px; }
+    .calc-btn { width: 100%; text-align: center; padding: 14px 20px; }
+    #results { margin-top: 20px; }
+    .results-header { font-size: 16px; }
+    .results-sub { font-size: 11px; }
+    /* Prevent border-radius clipping the first row */
+    .results-table { border-radius: 8px; overflow: visible; }
+    .results-table thead th { font-size: 9px; padding: 8px 10px; }
+    .results-table td { padding: 12px 10px; }
+    .res-rank { width: 24px; font-size: 12px; }
+    .res-name { font-size: 13px; }
+    .res-type { font-size: 10px; }
+    .res-note { font-size: 10px; }
+    .res-cost { font-size: 14px; }
+    .res-best-badge { font-size: 8px; padding: 2px 6px; }
+    .assumptions { font-size: 11px; padding: 12px 14px; }
+    .disclaimer { font-size: 11px; padding: 12px 14px; margin-top: 12px; }
+
+    /* ── FULL COMPARISON — keep important columns readable ── */
+    .table-wrap { border-radius: 8px; }
+    #comparison-table th { font-size: 9px; padding: 8px 8px; top: 0; }
+    #comparison-table td { font-size: 11px; padding: 10px 8px; }
+    /* Keep key columns at usable widths - don't override min-width globally */
+    #comparison-table th:first-child,
+    #comparison-table td:first-child { min-width: 120px !important; }
+    .platform-logo { width: 28px; height: 28px; }
+    .platform-logo-fallback { width: 28px; height: 28px; font-size: 9px; }
+    .platform-cell { gap: 7px; }
+    .badge { font-size: 9px; padding: 2px 6px; }
+    .footnotes { font-size: 11px; }
+    #signup-disclaimers { font-size: 11px; padding: 12px 14px; }
+
+    /* ── FUND AVAILABILITY ── */
+    .filter-row { gap: 6px; flex-wrap: wrap; }
+    .filter-chip { font-size: 11px; padding: 6px 12px; }
+    #fund-table th { font-size: 9px; padding: 8px 8px; }
+    #fund-table td { font-size: 11px; padding: 10px 8px; }
+    /* Keep ticker column sticky and readable */
+    #fund-table th:first-child,
+    #fund-table td:first-child { min-width: 80px !important; }
+    .etf-check { font-size: 13px; }
+
+    /* ── MISC ── */
     .mobile-break { display: block; }
+    .info-grid { grid-template-columns: 1fr; gap: 10px; }
+    .info-box { padding: 14px 16px; }
+    footer { font-size: 11px; padding: 16px 14px; }
+    .header-nfa-pill { font-size: 12px; padding: 5px 13px; }
+
+    /* ── PREVENT STICKY HEADER OBSCURING FIRST ROW ── */
+    html { scroll-padding-top: 120px; }
+    .fund-row:first-child td, .results-table tbody tr:first-child td {
+      padding-top: 14px;
+    }
+  }
+  @media (max-width: 640px) {
+    thead th { top: 38px; }
   }
   @media (min-width: 641px) {
     .mobile-break { display: none; }
@@ -1015,7 +1084,7 @@ const PLATFORMS = [
     platformFeeFlat: { funds: 0,      etf: 0      },
     platformFeeCap:  { funds: null,   etf: null   },
     tradeFee:        { funds: 0,      etf: 0      },
-    regularFee:      { funds: 0,      etf: 0      },
+    regularFee:      { funds: null,   etf: null   },
     fxFee: 0.007,
     fractional: false, autoInvest: false, pie: false, flexibleISA: true, sipp: true, ux: "Good",
     accounts: "S&S ISA, SIPP, GIA, Junior ISA",
@@ -1125,17 +1194,17 @@ const PLATFORMS = [
 const ETF_DATA = [
   { ticker:"VAFTGAG", provider:"Vanguard",      providerDomain:"vanguard.co.uk",   region:"Global", index:"FTSE Global All Cap",  type:"Mutual Fund", ter:"0.23%", div:"Accumulation", incomeAlso:true,  note:"Most diversified global mutual fund (7,000+ stocks)", url:"https://www.vanguardinvestor.co.uk/investments/vanguard-ftse-global-all-cap-index-fund-gbp-acc/overview", t212:"❌", ly:"❌", ie:"❌", ft:"✅", xtb:"❌", ig:"❌" },
   { ticker:"HSFWA", provider:"HSBC",   providerDomain:"assetmanagement.hsbc.co.uk", region:"Global", index:"FTSE All-World", type:"Mutual Fund", ter:"0.13%", div:"Accumulation", incomeAlso:true,  note:"Lower fee than VWRP — only available on select platforms", url:"https://www.assetmanagement.hsbc.co.uk/en/intermediary/funds/gb00bmjjjf91", t212:"❌", ly:"❌", ie:"❌", ft:"✅", xtb:"❌", ig:"❌" },
-  { ticker:"VWRP",    provider:"Vanguard",      providerDomain:"vanguard.co.uk",   region:"Global", index:"FTSE All-World",       type:"ETF",         ter:"0.19%", div:"Accumulation", incomeAlso:true,  note:"Largest global ETF (in terms of AUM)",             url:"https://www.vanguardinvestor.co.uk/investments/vanguard-ftse-all-world-ucits-etf-usd-accumulating/overview",               t212:"✅", ly:"✅", ie:"✅", ft:"✅", xtb:"❌", ig:"❌" },
-  { ticker:"FWRG",    provider:"Invesco",       providerDomain:"invesco.com",       region:"Global", index:"FTSE All-World",       type:"ETF",         ter:"0.15%", div:"Accumulation", incomeAlso:true,  note:"Another global ETF option",          url:"https://www.invesco.com/uk/en/financial-products/etfs/invesco-ftse-all-world-ucits-etf-acc.html",                           t212:"✅", ly:"✅", ie:"✅", ft:"✅", xtb:"✅", ig:"❌" },
-  { ticker:"ACWI",    provider:"SPDR",          providerDomain:"ssga.com",          region:"Global", index:"MSCI ACWI",            type:"ETF",         ter:"0.12%", div:"Accumulation", incomeAlso:false, note:"Lowest fee Accumulation global ETF",     url:"https://www.ssga.com/es/en_gb/intermediary/etfs/state-street-spdr-msci-all-country-world-ucits-etf-acc-spyy-gy",                                       t212:"✅", ly:"✅", ie:"✅", ft:"✅", xtb:"❌", ig:"❌" },
-  { ticker:"PACW",    provider:"Amundi",        providerDomain:"amundi.com",        region:"Global", index:"Solactive GBS Global Markets Large & Mid Cap", type:"ETF", ter:"0.07%", div:"Income", incomeAlso:false, note:"Lowest fee global ETF", noteWarning:"No GBP accumulation version", url:"https://www.amundietf.co.uk/en/professional/products/equity/amundi-prime-all-country-world-ucits-etf-dist/ie0009hf1mk9", t212:"✅", ly:"❌", ie:"✅", ft:"✅", xtb:"❌", ig:"❌" },
-  { ticker:"VUAG",    provider:"Vanguard",      providerDomain:"vanguard.co.uk",   region:"US",     index:"S&P 500",              type:"ETF",         ter:"0.07%", div:"Accumulation", incomeAlso:true,  note:"Vanguard's S&P 500 ETF",                    url:"https://www.vanguardinvestor.co.uk/investments/vanguard-s-and-p-500-ucits-etf-usd-accumulating/portfolio-data",                           t212:"✅", ly:"✅", ie:"✅", ft:"✅", xtb:"✅", ig:"❌" },
+  { ticker:"VWRP",    provider:"Vanguard",      providerDomain:"vanguard.co.uk",   region:"Global", index:"FTSE All-World",       type:"ETF",         ter:"0.19%", div:"Accumulation", incomeAlso:true,  note:"Largest global ETF (in terms of AUM)",             url:"https://www.vanguardinvestor.co.uk/investments/vanguard-ftse-all-world-ucits-etf-usd-accumulating/overview",               t212:"✅", ly:"✅", ie:"✅", ft:"✅", xtb:"❌", ig:"✅" },
+  { ticker:"FWRG",    provider:"Invesco",       providerDomain:"invesco.com",       region:"Global", index:"FTSE All-World",       type:"ETF",         ter:"0.15%", div:"Accumulation", incomeAlso:true,  note:"Another global ETF option",          url:"https://www.invesco.com/uk/en/financial-products/etfs/invesco-ftse-all-world-ucits-etf-acc.html",                           t212:"✅", ly:"✅", ie:"✅", ft:"✅", xtb:"✅", ig:"✅" },
+  { ticker:"ACWI",    provider:"SPDR",          providerDomain:"ssga.com",          region:"Global", index:"MSCI ACWI",            type:"ETF",         ter:"0.12%", div:"Accumulation", incomeAlso:false, note:"Lowest fee Accumulation global ETF",     url:"https://www.ssga.com/es/en_gb/intermediary/etfs/state-street-spdr-msci-all-country-world-ucits-etf-acc-spyy-gy",                                       t212:"✅", ly:"✅", ie:"✅", ft:"✅", xtb:"❌", ig:"✅" },
+  { ticker:"PACW",    provider:"Amundi",        providerDomain:"amundi.com",        region:"Global", index:"Solactive GBS Global Markets Large & Mid Cap", type:"ETF", ter:"0.07%", div:"Income", incomeAlso:false, note:"Lowest fee global ETF", noteWarning:"No GBP accumulation version", url:"https://www.amundietf.co.uk/en/professional/products/equity/amundi-prime-all-country-world-ucits-etf-dist/ie0009hf1mk9", t212:"✅", ly:"❌", ie:"✅", ft:"✅", xtb:"❌", ig:"✅" },
+  { ticker:"VUAG",    provider:"Vanguard",      providerDomain:"vanguard.co.uk",   region:"US",     index:"S&P 500",              type:"ETF",         ter:"0.07%", div:"Accumulation", incomeAlso:true,  note:"Vanguard's S&P 500 ETF",                    url:"https://www.vanguardinvestor.co.uk/investments/vanguard-s-and-p-500-ucits-etf-usd-accumulating/portfolio-data",                           t212:"✅", ly:"✅", ie:"✅", ft:"✅", xtb:"✅", ig:"✅" },
   { ticker:"CSP1",    provider:"iShares",       providerDomain:"ishares.com",       region:"US",     index:"S&P 500",              type:"ETF",         ter:"0.07%", div:"Accumulation", incomeAlso:true,  note:"Largest S&P 500 ETF (in terms of AUM)", url:"https://www.ishares.com/uk/individual/en/products/253743/ishares-sp-500-b-ucits-etf-acc-fund",                              t212:"✅", ly:"✅", ie:"✅", ft:"✅", xtb:"✅", ig:"✅" },
-  { ticker:"SPXL",    provider:"SPDR",          providerDomain:"ssga.com",          region:"US",     index:"S&P 500",              type:"ETF",         ter:"0.03%", div:"Accumulation", incomeAlso:true,  note:"Lowest fee S&P 500 ETF",              url:"https://www.ssga.com/dk/en_gb/intermediary/etfs/state-street-spdr-sp-500-ucits-etf-acc-spyl-gy",                                            t212:"✅", ly:"❌", ie:"✅", ft:"✅", xtb:"❌", ig:"❌" },
+  { ticker:"SPXL",    provider:"SPDR",          providerDomain:"ssga.com",          region:"US",     index:"S&P 500",              type:"ETF",         ter:"0.03%", div:"Accumulation", incomeAlso:true,  note:"Lowest fee S&P 500 ETF",              url:"https://www.ssga.com/dk/en_gb/intermediary/etfs/state-street-spdr-sp-500-ucits-etf-acc-spyl-gy",                                            t212:"✅", ly:"❌", ie:"✅", ft:"✅", xtb:"❌", ig:"✅" },
   { ticker:"EQQQ",    provider:"Invesco",       providerDomain:"invesco.com",       region:"US",     index:"Nasdaq 100",           type:"ETF",         ter:"0.30%", div:"Income",       incomeAlso:false, note:"Largest Nasdaq 100 ETF (in terms of AUM)",         url:"https://www.invesco.com/uk/en/financial-products/etfs/invesco-eqqq-nasdaq-100-ucits-etf-dist.html",                                  t212:"✅", ly:"✅", ie:"✅", ft:"✅", xtb:"✅", ig:"✅" },
-  { ticker:"QQQA",    provider:"UBS",           providerDomain:"ubs.com",           region:"US",     index:"Nasdaq 100",           type:"ETF",         ter:"0.13%", div:"Accumulation", incomeAlso:true,  note:"Lowest fee Nasdaq 100 ETF",           url:"https://www.ubs.com/uk/en/assetmanagement/funds/etf/ie000sb4g4i4-ubs-nasdaq-100-ucits-etf-pd001.html",                           t212:"✅", ly:"❌", ie:"✅", ft:"✅", xtb:"❌", ig:"❌" },
+  { ticker:"QQQA",    provider:"UBS",           providerDomain:"ubs.com",           region:"US",     index:"Nasdaq 100",           type:"ETF",         ter:"0.13%", div:"Accumulation", incomeAlso:true,  note:"Lowest fee Nasdaq 100 ETF",           url:"https://www.ubs.com/uk/en/assetmanagement/funds/etf/ie000sb4g4i4-ubs-nasdaq-100-ucits-etf-pd001.html",                           t212:"✅", ly:"❌", ie:"✅", ft:"✅", xtb:"❌", ig:"✅" },
   { ticker:"VUKG",    provider:"Vanguard",      providerDomain:"vanguard.co.uk",   region:"UK",     index:"FTSE 100",             type:"ETF",         ter:"0.09%", div:"Accumulation", incomeAlso:true,  note:"Vanguard's FTSE 100 ETF",                   url:"https://www.vanguardinvestor.co.uk/investments/vanguard-ftse-100-ucits-etf-gbp-accumulating/overview",                            t212:"✅", ly:"❌", ie:"✅", ft:"✅", xtb:"✅", ig:"✅" },
-  { ticker:"CUKX",    provider:"iShares",       providerDomain:"ishares.com",       region:"UK",     index:"FTSE 100",             type:"ETF",         ter:"0.07%", div:"Accumulation", incomeAlso:true,  note:"Largest and lowest fee FTSE 100 ETF",             url:"https://www.ishares.com/uk/individual/en/products/251795/ISHARES-CORE-FTSE-100-UCITS-ETF",                                     t212:"✅", ly:"✅", ie:"✅", ft:"✅", xtb:"✅", ig:"❌" },
+  { ticker:"CUKX",    provider:"iShares",       providerDomain:"ishares.com",       region:"UK",     index:"FTSE 100",             type:"ETF",         ter:"0.07%", div:"Accumulation", incomeAlso:true,  note:"Largest and lowest fee FTSE 100 ETF",             url:"https://www.ishares.com/uk/individual/en/products/251795/ISHARES-CORE-FTSE-100-UCITS-ETF",                                     t212:"✅", ly:"✅", ie:"✅", ft:"✅", xtb:"✅", ig:"✅" },
 ];
 
 // ════════════════════════════════════════════
